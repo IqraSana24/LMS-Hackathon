@@ -451,9 +451,29 @@ const ManageCourseContent = () => {
               </form>
 
               {/* Lessons List */}
-              <h3 style={{ marginBottom: '20px', color: DARK_ORANGE }}>
-                📚 All Lessons ({lessons.length})
-              </h3>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                <h3 style={{ margin: 0, color: DARK_ORANGE }}>
+                  📚 All Lessons ({lessons.length})
+                </h3>
+                {lessons.length > 0 && (
+                  <button
+                    onClick={() => navigate(`/lessons/${courseId}`)}
+                    style={{
+                      padding: '10px 20px',
+                      background: 'linear-gradient(to right, #10b981 0%, #059669 100%)',
+                      color: WHITE,
+                      border: 'none',
+                      borderRadius: '6px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      fontSize: '14px',
+                      boxShadow: '0 2px 8px rgba(16, 185, 129, 0.3)'
+                    }}
+                  >
+                    👁️ View Lessons
+                  </button>
+                )}
+              </div>
               {lessons.length === 0 ? (
                 <p style={{ 
                   textAlign: 'center', 

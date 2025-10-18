@@ -10,6 +10,7 @@ import StudentProfile from './components/StudentProfile'; // Student Profile Pag
 import ManageCourseContent from './components/ManageCourseContent'; // NEW IMPORT
 import ViewStudentCourseContent from './components/ViewStudentCourseContent'; // NEW IMPORT
 import StudentCourseView from './components/StudentCourseView'; // Student course details view
+import LessonViewer from './components/LessonViewer'; // Lesson viewer component
 
 function App() {
   return (
@@ -38,6 +39,8 @@ function App() {
         <Route path="/student/course-content/:courseId" element={<ViewStudentCourseContent />} />
         {/* NEW ROUTE: Student enrolled course details view */}
         <Route path="/student/course/:courseId" element={<StudentCourseView />} />
+        {/* NEW ROUTE: Lesson viewer for learning */}
+        <Route path="/lessons/:courseId" element={<LessonViewer />} />
 
         {/* Optional: Add a general redirect for the old /dashboard path to avoid empty pages */}
         {/* <Route path="/dashboard" element={<TeacherDashboard />} /> */}
