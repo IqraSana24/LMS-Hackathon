@@ -9,7 +9,6 @@ const CreateCourse = () => {
     duration: '',
     instructorId: '' // This will be set from localStorage
   });
-  const [selectedFiles, setSelectedFiles] = useState([]); // NEW: State for selected files
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -32,22 +31,6 @@ const CreateCourse = () => {
     }));
   };
 
-  // NEW: Handle file selection
-  const handleFileChange = (e) => {
-    // Only allow PDF, PPT, PPTX
-    const validFiles = Array.from(e.target.files).filter(file => {
-      const ext = file.name.split('.').pop().toLowerCase();
-      return ext === 'pdf' || ext === 'ppt' || ext === 'pptx';
-    });
-
-    setSelectedFiles(validFiles);
-    if (validFiles.length !== e.target.files.length) {
-      setMessage("Some selected files were not PDF or PPT/PPTX and were excluded.");
-    } else {
-      setMessage(""); // Clear message if all files are valid
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -59,44 +42,17 @@ const CreateCourse = () => {
       return;
     }
 
-    let newCourseId = null;
-
     try {
-      // 1. Create the course first
+      // Create the course
       const courseResponse = await axios.post('http://localhost:5000/api/courses', courseData);
-      newCourseId = courseResponse.data.course._id;
+      const newCourseId = courseResponse.data.course._id;
       
-      let uploadSuccessCount = 0;
-      let uploadErrorCount = 0;
-
-      // 2. Upload selected files for the newly created course
-      if (selectedFiles.length > 0) {
-        setMessage('Course created. Uploading files...');
-        for (const file of selectedFiles) {
-          const formData = new FormData();
-          formData.append('file', file);
-          
-          try {
-            await axios.post(`http://localhost:5000/api/courses/${newCourseId}/upload`, formData, {
-              headers: {
-                'Content-Type': 'multipart/form-data',
-              },
-            });
-            uploadSuccessCount++;
-          } catch (uploadError) {
-            console.error(`Error uploading ${file.name}:`, uploadError.response ? uploadError.response.data : uploadError.message);
-            uploadErrorCount++;
-          }
-        }
-        setMessage(`Course created and ${uploadSuccessCount} file(s) uploaded. ${uploadErrorCount} file(s) failed.`);
-      } else {
-        setMessage('Course created successfully! No files selected for upload.');
-      }
+      setMessage('Course created successfully!');
       
-      // 3. Redirect to the Manage Content page for the NEWLY created course
+      // Redirect to the Manage Content page for the newly created course
       setTimeout(() => {
         navigate(`/teacher/manage-course/${newCourseId}`); 
-      }, 2000); 
+      }, 1500); 
       
     } catch (error) {
       console.error('Course creation failed:', error.response ? error.response.data : error.message);
@@ -254,35 +210,6 @@ const CreateCourse = () => {
           />
         </div>
 
-        {/* NEW FILE INPUT SECTION */}
-        <div style={{ marginBottom: '30px' }}>
-          <label htmlFor="courseFiles" style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#9a3412', fontSize: '15px' }}>Add Course Files (PDFs/PPTs)</label>
-          <input
-            type="file"
-            id="courseFiles"
-            name="courseFiles"
-            accept=".pdf,.ppt,.pptx" // Only accept these file types
-            multiple // Allow multiple file selection
-            onChange={handleFileChange}
-            style={{ 
-              width: '100%', 
-              padding: '12px', 
-              border: '1px solid #fed7aa', 
-              borderRadius: '8px', 
-              fontSize: '15px', 
-              boxSizing: 'border-box',
-              backgroundColor: '#fff7ed',
-              cursor: 'pointer'
-            }}
-          />
-          {selectedFiles.length > 0 && (
-            <p style={{ marginTop: '10px', fontSize: '14px', color: '#065f46', backgroundColor: '#d1fae5', padding: '8px 12px', borderRadius: '6px', border: '1px solid #86efac' }}>
-              Selected: {selectedFiles.map(f => f.name).join(', ')} ({selectedFiles.length} files)
-            </p>
-          )}
-        </div>
-        {/* END NEW FILE INPUT SECTION */}
-
         <button 
           type="submit" 
           disabled={loading}
@@ -311,7 +238,7 @@ const CreateCourse = () => {
             e.target.style.boxShadow = '0 4px 12px rgba(249, 115, 22, 0.3)';
           }}
         >
-          {loading ? 'Creating & Uploading...' : 'Save & Add Files'}
+          {loading ? 'Creating Course...' : 'Create Course'}
         </button>
       </form>
       </div>
