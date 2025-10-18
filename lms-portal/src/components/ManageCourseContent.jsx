@@ -79,8 +79,11 @@ const ManageCourseContent = () => {
   const fetchLessons = async () => {
     try {
       const response = await axios.get(`http://localhost:5000/api/courses/${courseId}/lessons`);
+      console.log('Lessons API Response:', response.data);
       console.log('Lessons fetched:', response.data.lessons);
-      setLessons(response.data.lessons || []);
+      const fetchedLessons = response.data.lessons || [];
+      console.log('First lesson structure:', fetchedLessons[0]);
+      setLessons(fetchedLessons);
     } catch (err) {
       console.error('Failed to fetch lessons:', err);
     }
@@ -129,13 +132,26 @@ const ManageCourseContent = () => {
 
   // Delete lesson
   const handleDeleteLesson = async (lessonId) => {
+    console.log('handleDeleteLesson called with:', lessonId);
+    console.log('lessonId type:', typeof lessonId);
+    
+    if (!lessonId) {
+      setUploadMessage('❌ Error: Invalid lesson ID');
+      return;
+    }
+    
     if (window.confirm('Delete this lesson?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/courses/${courseId}/lessons/${lessonId}`);
+        const deleteUrl = `http://localhost:5000/api/courses/${courseId}/lessons/${lessonId}`;
+        console.log('DELETE URL:', deleteUrl);
+        
+        await axios.delete(deleteUrl);
         setUploadMessage('✅ Lesson deleted!');
         fetchLessons();
         setTimeout(() => setUploadMessage(''), 3000);
       } catch (err) {
+        console.error('Delete error:', err);
+        console.error('Error response:', err.response?.data);
         setUploadMessage(`❌ Error: ${err.response?.data?.message || err.message}`);
       }
     }
@@ -450,43 +466,53 @@ const ManageCourseContent = () => {
                 </p>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                  {lessons.map((lesson, index) => (
-                    <div key={lesson._id || lesson || index} style={{
-                      padding: '20px',
-                      backgroundColor: WHITE,
-                      border: `2px solid ${BORDER_ORANGE}`,
-                      borderRadius: '8px',
-                      boxShadow: '0 2px 8px rgba(249, 115, 22, 0.1)'
-                    }}>
-                      <div style={{ 
-                        display: 'flex', 
-                        justifyContent: 'space-between', 
-                        alignItems: 'start', 
-                        marginBottom: '10px' 
+                  {lessons.map((lesson, index) => {
+                    // Handle both object and string formats
+                    const lessonId = typeof lesson === 'string' ? lesson : lesson._id;
+                    const lessonTitle = typeof lesson === 'string' ? `Lesson ID: ${lesson}` : (lesson.title || '(No title)');
+                    const lessonContent = typeof lesson === 'string' ? 'Lesson details not available' : (lesson.content || '(No content)');
+                    
+                    return (
+                      <div key={lessonId || index} style={{
+                        padding: '20px',
+                        backgroundColor: WHITE,
+                        border: `2px solid ${BORDER_ORANGE}`,
+                        borderRadius: '8px',
+                        boxShadow: '0 2px 8px rgba(249, 115, 22, 0.1)'
                       }}>
-                        <h4 style={{ margin: 0, color: ORANGE, fontSize: '18px' }}>
-                          Lesson {index + 1}: {lesson.title || '(No title)'}
-                        </h4>
-                        <button
-                          onClick={() => handleDeleteLesson(lesson._id || lesson)}
-                          style={{
-                            padding: '6px 12px',
-                            backgroundColor: '#dc2626',
-                            color: WHITE,
-                            border: 'none',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            fontSize: '13px'
-                          }}
-                        >
-                          Delete
-                        </button>
+                        <div style={{ 
+                          display: 'flex', 
+                          justifyContent: 'space-between', 
+                          alignItems: 'start', 
+                          marginBottom: '10px' 
+                        }}>
+                          <h4 style={{ margin: 0, color: ORANGE, fontSize: '18px' }}>
+                            Lesson {index + 1}: {lessonTitle}
+                          </h4>
+                          <button
+                            onClick={() => {
+                              console.log('Deleting lesson:', lessonId);
+                              handleDeleteLesson(lessonId);
+                            }}
+                            style={{
+                              padding: '6px 12px',
+                              backgroundColor: '#dc2626',
+                              color: WHITE,
+                              border: 'none',
+                              borderRadius: '4px',
+                              cursor: 'pointer',
+                              fontSize: '13px'
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                        <p style={{ margin: 0, color: '#666', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
+                          {lessonContent}
+                        </p>
                       </div>
-                      <p style={{ margin: 0, color: '#666', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
-                        {lesson.content || '(No content)'}
-                      </p>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>
