@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "lms-backend/server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "lms-portal/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "lms-portal/dist"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "lms-backend/server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "lms-portal/dist/$1"
+    }
+  ]
+}
