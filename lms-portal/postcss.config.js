@@ -1,7 +1,6 @@
-// New ESM code
+// PostCSS configuration - Autoprefixer only
 export default {
   plugins: {
-    tailwindcss: {},
     autoprefixer: {},
   },
 }
