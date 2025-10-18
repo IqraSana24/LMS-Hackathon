@@ -451,7 +451,7 @@ const ManageCourseContent = () => {
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                   {lessons.map((lesson, index) => (
-                    <div key={lesson._id} style={{
+                    <div key={lesson._id || lesson || index} style={{
                       padding: '20px',
                       backgroundColor: WHITE,
                       border: `2px solid ${BORDER_ORANGE}`,
@@ -468,7 +468,7 @@ const ManageCourseContent = () => {
                           Lesson {index + 1}: {lesson.title || '(No title)'}
                         </h4>
                         <button
-                          onClick={() => handleDeleteLesson(lesson._id)}
+                          onClick={() => handleDeleteLesson(lesson._id || lesson)}
                           style={{
                             padding: '6px 12px',
                             backgroundColor: '#dc2626',
@@ -617,8 +617,8 @@ const ManageCourseContent = () => {
                 </p>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                  {assignments.map((assignment) => (
-                    <div key={assignment._id} style={{
+                  {assignments.map((assignment, index) => (
+                    <div key={assignment._id || index} style={{
                       padding: '20px',
                       backgroundColor: WHITE,
                       border: `2px solid ${BORDER_ORANGE}`,
@@ -721,8 +721,8 @@ const ManageCourseContent = () => {
                 </p>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                  {course.materials.map(material => (
-                    <div key={material._id} style={{ 
+                  {course.materials.map((material, index) => (
+                    <div key={material._id || index} style={{ 
                       padding: '20px',
                       backgroundColor: WHITE,
                       border: `2px solid ${BORDER_ORANGE}`,
