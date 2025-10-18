@@ -8,6 +8,9 @@ dotenv.config();
 
 const MONGO_URI = process.env.MONGO_URI;
 
+// Load the Course model
+const Course = require('./models/Course');
+
 // Connect to MongoDB
 mongoose.connect(MONGO_URI)
   .then(() => console.log('MongoDB connected for migration'))
@@ -18,7 +21,7 @@ mongoose.connect(MONGO_URI)
 
 async function migrateLessons() {
   try {
-    const Course = mongoose.model('Course');
+    // Course model is already loaded above
     
     // Find all courses
     const courses = await Course.find({});
