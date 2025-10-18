@@ -11,14 +11,32 @@ const CourseSchema = new mongoose.Schema({
         ref: 'User', 
         required: true
     },
-    lessons: [{ // NEW: Reference Lesson documents
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Lesson'
-    }],
-    assignments: [{ // NEW: Reference Assignment documents
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Assignment'
-    }],
+    materials: [ // Course materials (PDFs/PPTs)
+        {
+            originalName: String,
+            fileName: String,
+            filePath: String,
+            fileType: String,
+            uploadedAt: { type: Date, default: Date.now }
+        }
+    ],
+    lessons: [ // Embedded lesson subdocuments
+        {
+            title: { type: String, required: true },
+            content: { type: String, required: true },
+            order: { type: Number, default: 1 },
+            createdAt: { type: Date, default: Date.now }
+        }
+    ],
+    assignments: [ // Embedded assignment subdocuments
+        {
+            title: { type: String, required: true },
+            description: { type: String, required: true },
+            dueDate: { type: Date },
+            maxScore: { type: Number, default: 100 },
+            createdAt: { type: Date, default: Date.now }
+        }
+    ],
     enrollments: [{ 
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Student' 
