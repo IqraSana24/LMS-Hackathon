@@ -1,0 +1,169 @@
+:root {
+    /* Main Formal Color */
+    --primary-color-login: #0ea5e9; /* Sky blue for links */
+    --text-dark-color-login: #0c4a6e; /* Deep blue text for readability */
+    --text-light-color-login: #0369a1; /* Sky blue text for prompts */
+    --border-color-login: #bae6fd; /* Light blue border */
+    --white-color: #ffffff; /* White text/background */
+
+    /* Background colors: Sky Blue -> Light Blue -> White gradient */
+    --background-color-start-thick: #0ea5e9; /* Sky Blue */
+    --background-color-middle-rose: #e0f2fe; /* Light Blue */
+    --background-color-end: rgb(248, 183, 164); /* Pure white */
+    
+    /* Login Card background color: Pure White */
+    --card-bg-color-login: #ffffff; 
+    
+    /* BUTTON GRADIENT: Sky Blue to Light Blue */
+    --dignity-gradient: linear-gradient(to right, #0ea5e9 0%, #38bdf8 100%); 
+    --dignity-gradient-hover: linear-gradient(to right, #0284c7 0%, #0ea5e9 100%);
+}
+
+/* Page Container and Layout - Sky Blue/Light Blue/White Gradient Background */
+.login-page-container {
+    min-height: 100vh;
+    background: linear-gradient(
+        to bottom right, 
+        var(--background-color-start-thick) 0%, 
+        var(--background-color-middle-rose) 30%, 
+        var(--background-color-end) 70% 
+    ); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Login Card - Pure White background */
+.login-card {
+    background-color: var(--card-bg-color-login);
+    box-shadow: 0 10px 30px rgba(14, 165, 233, 0.2); 
+    border-radius: 12px;
+    padding: 40px;
+    max-width: 450px;
+    width: 100%;
+    border: 1px solid var(--border-color-login);
+}
+
+.login-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text-dark-color-login);
+    margin-bottom: 15px;
+}
+
+.student-login-prompt {
+    font-size: 15px;
+    color: var(--text-light-color-login);
+    margin-bottom: 5px;
+}
+
+.student-login-link {
+    color: var(--primary-color-login); 
+    text-decoration: none;
+    font-weight: 500;
+    margin-left: 5px;
+}
+
+.student-login-link:hover {
+    text-decoration: underline;
+}
+
+.browser-recommendation {
+    font-size: 13px;
+    color: #999999;
+    margin-bottom: 25px;
+}
+
+/* Form Group */
+.login-form-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.login-form-content .form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-dark-color-login);
+    margin-bottom: 5px;
+}
+
+/* Input Fields */
+.login-form-content .form-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color-login);
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.15s ease-in-out;
+    /* Input background light blue tint */
+    background-color: #f0f9ff; 
+}
+
+.login-form-content .form-input:focus {
+    border-color: var(--primary-color-login);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2); 
+}
+
+/* Password Links */
+.password-links {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+
+.forgot-password-link, .activation-link {
+    color: var(--primary-color-login); 
+    text-decoration: none;
+}
+
+.forgot-password-link:hover, .activation-link:hover {
+    text-decoration: underline;
+}
+
+/* Login Button - Sky Blue to Light Blue Gradient */
+.login-btn-primary {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 14px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 8px;
+    background: var(--dignity-gradient); /* Sky blue to light blue gradient */
+    color: var(--white-color); 
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    box-shadow: 0 5px 15px rgba(14, 165, 233, 0.3); 
+}
+
+.login-btn-primary:hover {
+    background: var(--dignity-gradient-hover); 
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(14, 165, 233, 0.5); 
+}
+/* Messages */
+.message {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.message-success {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.message-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+}

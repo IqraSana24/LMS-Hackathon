@@ -1,0 +1,152 @@
+:root {
+    /* Main Formal Color */
+    --primary-color: #f97316;       /* Orange */
+    --background-color-subtle: #fff7ed; /* Very subtle light orange background */
+    --card-bg-color: #ffffff;
+    
+    /* New Dignity Gradient - Orange Theme */
+    --dignity-gradient: linear-gradient(to right, #f97316 0%, #fb923c 100%); 
+    --dignity-gradient-hover: linear-gradient(to right, #ea580c 0%, #f97316 100%);
+    
+    --text-dark-color: #9a3412;
+    --text-light-color: #ea580c;
+    --border-color: #fed7aa;
+    --white-color: #ffffff;
+}
+
+/* Page Container and Layout - Dignified Orange Background */
+.registration-page-container {
+    min-height: 100vh;
+    background-color: var(--background-color-subtle); /* Apply the dignified light orange background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Registration Card */
+.registration-card {
+    background-color: var(--card-bg-color);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow */
+    border-radius: 15px; /* Softer corners */
+    padding: 40px;
+    max-width: 500px;
+    width: 100%;
+}
+
+.card-title {
+    font-size: 32px; /* Slightly larger heading */
+    font-weight: 700; /* Medium-bold */
+    color: var(--primary-color); /* Darker purple */
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+/* Form Group */
+.form-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 15px; /* Slightly larger label font */
+    font-weight: 600; /* Bolder labels */
+    color: var(--text-dark-color);
+    margin-bottom: 6px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 13px; /* Slightly larger input padding */
+    border: 1px solid var(--border-color);
+    border-radius: 8px; /* Softer input corners */
+    font-size: 16px;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.form-input:focus {
+    border-color: var(--primary-color); /* Primary color focus border */
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2); /* Soft orange focus shadow */
+}
+
+.form-select {
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="%23f97316"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>');
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 1em;
+}
+
+/* Button - Apply the Orange Gradient */
+.btn-primary {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 14px; 
+    margin-top: 15px;
+    border: none;
+    border-radius: 8px; 
+    background: var(--dignity-gradient); /* Use the orange gradient */
+    color: var(--white-color);
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    box-shadow: 0 5px 15px rgba(249, 115, 22, 0.3); 
+}
+
+.btn-primary:hover {
+    background: var(--dignity-gradient-hover); /* Slightly different gradient on hover */
+    transform: translateY(-2px); 
+    box-shadow: 0 8px 20px rgba(249, 115, 22, 0.5); /* Shadow reflecting the orange color */
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Messages */
+.message {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.message-success {
+    background-color: #d1fae5; /* Light Green */
+    color: #033f2ec5; /* Dark Green */
+}
+
+.message-error {
+    background-color: #fee2e2; /* Light Red */
+    color: #991b1b; /* Dark Red */
+}
+
+/* Login Link */
+.login-link {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 14px;
+    color: var(--text-light-color);
+}
+
+.link-secondary {
+    font-weight: 600;
+    color: var(--primary-color); 
+    text-decoration: none;
+    transition: color 0.15s ease-in-out;
+    margin-left: 5px;
+}
+
+.link-secondary:hover {
+    color: #c2410c; /* Darker orange on hover */
+    text-decoration: underline;
+}
