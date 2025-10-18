@@ -96,9 +96,10 @@ const LoginPage = () => {
 
       // Configure Google Sign-In
       window.google.accounts.id.initialize({
-        // TODO: Replace with your actual Google Client ID
-        // Get it from: https://console.cloud.google.com/
-        client_id: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
+        // INSTRUCTION: Replace the line below with your Google Client ID from:
+        // https://console.cloud.google.com/ → Credentials → OAuth 2.0 Client IDs
+        // Example: client_id: '123456789-abc123.apps.googleusercontent.com',
+        client_id: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com', // ← REPLACE THIS
         callback: handleGoogleCallback,
         auto_select: true,
       });
