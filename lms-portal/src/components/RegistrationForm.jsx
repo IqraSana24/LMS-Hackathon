@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './RegistrationForm.css';
 
@@ -14,6 +14,21 @@ const RegistrationForm = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [showEmailRegistration, setShowEmailRegistration] = useState(false);
+
+  // Load Google Sign-In script
+  useEffect(() => {
+    const loadGoogleScript = () => {
+      if (window.google) return;
+      
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      document.body.appendChild(script);
+    };
+    
+    loadGoogleScript();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -69,6 +84,92 @@ const RegistrationForm = () => {
       setMessage(err.message || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Handle Google Sign-Up
+  const handleGoogleSignUp = async () => {
+    try {
+      if (!window.google) {
+        setMessage('Google Sign-In is loading. Please try again in a moment.');
+        return;
+      }
+
+      // Configure Google Sign-In
+      window.google.accounts.id.initialize({
+        // TODO: Replace with your actual Google Client ID
+        client_id: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
+        callback: handleGoogleCallback,
+        auto_select: false, // Don't auto-select for registration
+      });
+
+      // Show account chooser
+      window.google.accounts.id.prompt();
+      
+    } catch (error) {
+      console.error('Google Sign-Up Error:', error);
+      setMessage('❌ Google Sign-Up failed. Please try email registration.');
+    }
+  };
+
+  // Callback after Google authentication
+  const handleGoogleCallback = async (response) => {
+    try {
+      setLoading(true);
+      setMessage('Registering with Google...');
+
+      // Decode the JWT token to get user info
+      const userInfo = parseJwt(response.credential);
+      
+      console.log('Google User Info:', userInfo);
+
+      // Send to backend for registration
+      const backendResponse = await fetch('http://localhost:5000/api/google-register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token: response.credential,
+          email: userInfo.email,
+          name: userInfo.name,
+          picture: userInfo.picture,
+          role: formData.role || 'Student' // Use selected role or default to Student
+        })
+      });
+
+      if (!backendResponse.ok) {
+        const errBody = await backendResponse.json().catch(() => ({}));
+        throw new Error(errBody.error || 'Google registration failed');
+      }
+
+      const data = await backendResponse.json();
+      
+      setMessage(`✅ Registration successful! Welcome ${userInfo.name}! Redirecting...`);
+      
+      // Redirect to appropriate login page
+      setTimeout(() => {
+        navigate(formData.role === 'Student' ? '/login/student' : '/login');
+      }, 1500);
+
+    } catch (error) {
+      console.error('Google Registration Error:', error);
+      setMessage(`❌ ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Helper function to decode JWT
+  const parseJwt = (token) => {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      console.error('Error parsing JWT:', error);
+      return {};
     }
   };
 
@@ -167,10 +268,8 @@ const RegistrationForm = () => {
         {/* Continue with Google Button */}
         <button
           className="btn google-register-btn"
-          onClick={() => {
-            setMessage('Google Sign-Up coming soon!');
-            // TODO: Implement Google OAuth
-          }}
+          onClick={handleGoogleSignUp}
+          disabled={loading}
         >
           <svg className="google-icon" viewBox="0 0 24 24" width="20" height="20">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>

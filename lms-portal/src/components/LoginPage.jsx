@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../utils/api.js'; 
 import './LoginPage.css';
@@ -12,6 +12,21 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [showEmailLogin, setShowEmailLogin] = useState(false);
+
+  // Load Google Sign-In script
+  useEffect(() => {
+    const loadGoogleScript = () => {
+      if (window.google) return;
+      
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      document.body.appendChild(script);
+    };
+    
+    loadGoogleScript();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -67,6 +82,103 @@ const LoginPage = () => {
         setMessage(`❌ Error: ${errorMessage}`);
     } finally {
         setLoading(false);
+    }
+  };
+
+  // Handle Google Sign-In
+  const handleGoogleSignIn = async () => {
+    try {
+      // Initialize Google Sign-In
+      if (!window.google) {
+        setMessage('Google Sign-In is loading. Please try again in a moment.');
+        return;
+      }
+
+      // Configure Google Sign-In
+      window.google.accounts.id.initialize({
+        // TODO: Replace with your actual Google Client ID
+        // Get it from: https://console.cloud.google.com/
+        client_id: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
+        callback: handleGoogleCallback,
+        auto_select: true,
+      });
+
+      // Show the One Tap prompt or account chooser
+      window.google.accounts.id.prompt();
+      
+    } catch (error) {
+      console.error('Google Sign-In Error:', error);
+      setMessage('❌ Google Sign-In failed. Please try email login.');
+    }
+  };
+
+  // Callback after Google authentication
+  const handleGoogleCallback = async (response) => {
+    try {
+      setLoading(true);
+      setMessage('Signing in with Google...');
+
+      // Decode the JWT token to get user info
+      const userInfo = parseJwt(response.credential);
+      
+      console.log('Google User Info:', userInfo);
+
+      // Send Google token to your backend for verification and user creation/login
+      const backendResponse = await fetch('http://localhost:5000/api/google-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token: response.credential,
+          email: userInfo.email,
+          name: userInfo.name,
+          picture: userInfo.picture
+        })
+      });
+
+      if (!backendResponse.ok) {
+        throw new Error('Google authentication failed on server');
+      }
+
+      const data = await backendResponse.json();
+      const user = data.user;
+      const role = user.role || 'Staff';
+
+      // Store user data
+      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('role', role);
+      localStorage.setItem('isLoggedIn', 'true');
+      
+      setMessage(`✅ Welcome ${userInfo.name}! Redirecting...`);
+      
+      // Redirect based on role
+      const redirectPath = (role === 'Teacher' || role === 'Admin' || role === 'Staff') 
+        ? '/teacher-dashboard' 
+        : '/staff/dashboard';
+
+      setTimeout(() => {
+        navigate(redirectPath);
+      }, 1000);
+
+    } catch (error) {
+      console.error('Google Login Error:', error);
+      setMessage('❌ Google Sign-In failed. Please try email login.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Helper function to decode JWT
+  const parseJwt = (token) => {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      console.error('Error parsing JWT:', error);
+      return {};
     }
   };
 
@@ -148,10 +260,8 @@ const LoginPage = () => {
         {/* Continue with Google Button */}
         <button
           className="btn google-login-btn"
-          onClick={() => {
-            setMessage('Google Sign-In coming soon!');
-            // TODO: Implement Google OAuth
-          }}
+          onClick={handleGoogleSignIn}
+          disabled={loading}
         >
           <svg className="google-icon" viewBox="0 0 24 24" width="20" height="20">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>

@@ -155,6 +155,103 @@ app.post('/api/login-student', async (req, res) => {
     }
 });
 
+// --- GOOGLE OAUTH ROUTES ---
+
+// Google Login - for Staff/Teacher
+app.post('/api/google-login', async (req, res) => {
+    const { email, name, picture } = req.body || {};
+    
+    if (!email || !name) {
+        return res.status(400).json({ error: 'Email and name are required from Google' });
+    }
+
+    try {
+        // Check if user already exists
+        let user = await User.findOne({ email });
+        
+        if (!user) {
+            // Create new user with Google data
+            // No password needed for Google OAuth users
+            user = new User({
+                name,
+                email,
+                passwordHash: '', // Empty for Google OAuth users
+                role: 'Staff', // Default role for Google login
+                picture: picture || ''
+            });
+            await user.save();
+            console.log('New Google user created:', email);
+        } else {
+            console.log('Existing user logged in via Google:', email);
+        }
+
+        const { passwordHash: _, ...safeUser } = user.toObject();
+        res.json({ user: safeUser });
+        
+    } catch (err) {
+        console.error('Google Login Error:', err);
+        res.status(500).json({ error: 'internal_server_error' });
+    }
+});
+
+// Google Register - for both Staff/Teacher and Student
+app.post('/api/google-register', async (req, res) => {
+    const { email, name, picture, role = 'Student' } = req.body || {};
+    
+    if (!email || !name) {
+        return res.status(400).json({ error: 'Email and name are required from Google' });
+    }
+
+    try {
+        // Check if user already exists in appropriate collection
+        if (role === 'Student') {
+            let student = await Student.findOne({ email });
+            
+            if (student) {
+                return res.status(409).json({ error: 'Student account already exists. Please login instead.' });
+            }
+            
+            // Create new student
+            student = new Student({
+                name,
+                email,
+                passwordHash: '', // Empty for Google OAuth users
+                picture: picture || ''
+            });
+            await student.save();
+            
+            const { passwordHash: _, ...safeStudent } = student.toObject();
+            res.status(201).json({ student: safeStudent });
+            
+        } else {
+            // Teacher/Staff registration
+            let user = await User.findOne({ email });
+            
+            if (user) {
+                return res.status(409).json({ error: 'User account already exists. Please login instead.' });
+            }
+            
+            user = new User({
+                name,
+                email,
+                passwordHash: '', // Empty for Google OAuth users
+                role: role || 'Teacher',
+                picture: picture || ''
+            });
+            await user.save();
+            
+            const { passwordHash: _, ...safeUser } = user.toObject();
+            res.status(201).json({ user: safeUser });
+        }
+        
+    } catch (err) {
+        console.error('Google Registration Error:', err);
+        res.status(500).json({ error: 'internal_server_error' });
+    }
+});
+
+// --- END GOOGLE OAUTH ROUTES ---
+
 
 // --- COURSE API Endpoints ---
 
