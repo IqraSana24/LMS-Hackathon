@@ -64,50 +64,6 @@ const upload = multer({
 });
 // --- END MULTER CONFIGURATION ---
 
-
-// --- Mongoose Schemas (Defining the Course Schema here as it was missing a definition) ---
-
-// Course Schema - UPDATED to include materials, lessons, and assignments
-const CourseSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  description: { type: String, required: true },
-  duration: { type: String, required: true },
-  instructor: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, 
-  materials: [ // Course materials (PDFs/PPTs)
-    {
-      originalName: String,
-      fileName: String, // Stored filename on server
-      filePath: String, // Path to access the file (e.g., /uploads/file.pdf)
-      fileType: String, // 'pdf' or 'ppt'
-      uploadedAt: { type: Date, default: Date.now }
-    }
-  ],
-  lessons: [ // Course lessons
-    {
-      title: { type: String, required: true },
-      content: { type: String, required: true },
-      order: { type: Number, default: 1 },
-      createdAt: { type: Date, default: Date.now }
-    }
-  ],
-  assignments: [ // Course assignments
-    {
-      title: { type: String, required: true },
-      description: { type: String, required: true },
-      dueDate: { type: Date },
-      maxScore: { type: Number, default: 100 },
-      createdAt: { type: Date, default: Date.now }
-    }
-  ]
-}, { timestamps: true });
-
-// Assuming the Course model is defined here if not in a separate file
-try {
-    mongoose.model('Course', CourseSchema);
-} catch (e) {
-    // Already defined, ignore
-}
-
 // --- HELPER FUNCTION (using bcrypt) ---
 const SALT_ROUNDS = 10;
 
