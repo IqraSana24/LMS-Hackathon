@@ -167,3 +167,108 @@
     background-color: #fee2e2;
     color: #991b1b;
 }
+
+/* OR Divider */
+.or-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 30px 0 20px 0;
+}
+
+.or-divider::before,
+.or-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.or-text {
+    padding: 0 15px;
+    color: #6b7280;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Google Login Button */
+.google-login-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background-color: var(--white-color);
+    color: #1f2937;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.google-login-btn:hover {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.google-icon {
+    width: 20px;
+    height: 20px;
+}
+
+/* Email Login Button */
+.email-login-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background-color: var(--white-color);
+    color: #1f2937;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.email-login-btn:hover {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.email-icon {
+    width: 20px;
+    height: 20px;
+}
+
+/* Login Footer */
+.login-footer {
+    text-align: center;
+    font-size: 14px;
+    color: #6b7280;
+    margin-top: 20px;
+}
+
+.login-link {
+    color: var(--primary-color-login);
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 5px;
+}
+
+.login-link:hover {
+    text-decoration: underline;
+}
